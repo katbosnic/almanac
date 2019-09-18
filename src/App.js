@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import InputForm from './components/inputForm';
+import './styles/styles.css';
 
 class App extends Component {
 
@@ -16,9 +16,10 @@ class App extends Component {
     return (
       <div className="App">
         <header>
-          <h1>The New Farmer's Almanac-ish</h1>
+          <h1><span>The New</span>Farmer's Almanac-ish</h1>
           <h2>Founded in 2019</h2>
         </header>
+        <InputForm/>
       </div>
     );
   }
