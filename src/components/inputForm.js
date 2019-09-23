@@ -6,11 +6,12 @@ class InputForm extends Component {
     constructor() {
         super();
         this.state = {
-            userSearch: '',
-            position: -1,
-            locations: [],
-            showAutocomplete: false,
-            showWeatherData: false
+          userSearch: '',
+          position: -1,
+          locations: [],
+          showAutocomplete: false,
+          showWeatherData: false,
+          currentWeather: {}
         }
     }
 
@@ -108,12 +109,7 @@ class InputForm extends Component {
          
         this.callForWeather(response.data[0].lat, response.data[0].lon)
 
-        this.setState({
-          showAutocomplete: false,
-          showWeatherData: true,
-          
-        })
-          
+        
         }).catch(error => {  // If nothing matched, something went wrong on your end!
             console.log(error)
         })
@@ -124,6 +120,16 @@ class InputForm extends Component {
         axios.get(`https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/ee21bf7ee595fdaabb455ae45c8d6bca/${parseFloat(lat).toFixed(2)},${parseFloat(lon).toFixed(2)}`).then(response => {
         
         console.log(response)
+        this.setState({
+          showAutocomplete: false,
+          showWeatherData: true,
+          currentWeather: {
+            currently: response.data.currently,
+            daily: response.data.daily,
+            hourly: response.data.hourly,
+            minutely: response.data.minutely
+          }
+        })
           
         }).catch(error => {  // If nothing matched, something went wrong on your end!
             console.log(error)
@@ -166,8 +172,7 @@ class InputForm extends Component {
                         )
                     })} 
                 </ul> : null}
-                {this.state.showWeatherData ? <Chart /> : null}
-                
+                {this.state.showWeatherData ? <Chart currentWeather={this.state.currentWeather}/> : null}
             </div>
         )
     }

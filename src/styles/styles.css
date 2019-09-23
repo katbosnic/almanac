@@ -194,4 +194,9 @@ header {
   background-size: contain;
   background-position-x: 50%;
 }
+
+canvas {
+  width: 50% !important;
+  height: inherit !important;
+}
 /*# sourceMappingURL=styles.css.map */
