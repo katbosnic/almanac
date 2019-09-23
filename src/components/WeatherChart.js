@@ -17,7 +17,7 @@ class WeatherChart extends Component {
     }
 
     drawChart = () => {
-        
+        Chart.defaults.global.defaultFontSize = 30;
         var ctx = document.getElementById('myChart');
         
         new Chart(ctx, {
@@ -34,10 +34,9 @@ class WeatherChart extends Component {
                 this.convertToCelcius(this.props.currentWeather.daily.data[5].apparentTemperatureHigh),
                 this.convertToCelcius(this.props.currentWeather.daily.data[6].apparentTemperatureHigh),
                 this.convertToCelcius(this.props.currentWeather.daily.data[7].apparentTemperatureHigh)],
-                borderColor: 'rgba(178, 34, 34 , 1)',
-                backgroundColor: 'rgba(255, 249, 187, 0.5)',
-                borderWidth: 4,
-               
+                    borderColor: 'rgba(178, 34, 34 , 1)',
+                    backgroundColor: 'rgba(255, 249, 187, 0.5)',
+                    borderWidth: 4
                 }]
             },
             options: {
@@ -57,10 +56,9 @@ class WeatherChart extends Component {
                 tooltips: {
                     titleFontSize: 30,
                     bodyFontSize: 35
-                },
-                labels: {
-                    fontSize: 30
                 }
+                
+                
             }
         });
         
