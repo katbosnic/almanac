@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import InputForm from './components/inputForm';
+import InputForm from './components/InputForm';
 import './styles/styles.css';
 
 class App extends Component {
