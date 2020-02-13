@@ -1,7 +1,36 @@
 
 .search-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 15px auto;
+    min-height: 60vh;
     .highlighted {
-        color: red;
+        background: darkgrey;
+    }
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    .autocomplete {
+        position: absolute;
+        top: 67px;
+        background: #FAFAFA;
+        border: 2px solid grey;
+        .autocomplete-items {
+            &:hover {
+                background: darkgrey;
+            }
+        }
     }
 
+    label {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    input {
+        padding: 3px 15px;
+        font-size: 20px;
+        width: 300px;
+    }
 }

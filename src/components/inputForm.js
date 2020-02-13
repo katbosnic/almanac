@@ -1,6 +1,7 @@
 import React, { Component } from 'react'; 
 import axios from 'axios';
 import Chart from '../components/WeatherChart.js';
+import Swal from 'sweetalert2';
 
 class InputForm extends Component {
     constructor() {
@@ -13,6 +14,7 @@ class InputForm extends Component {
           showWeatherData: false,
           currentWeather: {}
         }
+        this.handleClick = this.handleClick.bind(this)
     }
 
     handleAutocomplete = (event) => {
@@ -23,6 +25,8 @@ class InputForm extends Component {
         for (let i = 0; i < elements.length; i++) {
             elements[i].classList.remove('highlighted')
         }
+
+
     }
 
     handleChange = (event) => {
@@ -36,6 +40,12 @@ class InputForm extends Component {
         }
         this.setState({position: -1})
     }
+    
+    handleClick = (event) => {
+      // event.preventDefault();
+      this.callForLatAndLon(event.target.innerHTML)
+      this.myDate()
+    }
 
     handleKeyDown = (event) => {
         let {position, locations} = this.state
@@ -43,6 +53,7 @@ class InputForm extends Component {
       
           this.setState({locations: [], position: -1})
           this.callForLatAndLon(event.target.value)
+          this.myDate()
           
         } else if (event.which !== 38 && event.which !== 40) {
           
@@ -72,7 +83,7 @@ class InputForm extends Component {
       
       handleKeyUp = (e) => {
         let {position, locations} = this.state
-        console.log(locations)
+        
         if (e.which === 38 || e.which === 40) {
             if (typeof locations === 'object'){
               if(locations.length > 0) {
@@ -111,7 +122,12 @@ class InputForm extends Component {
 
         
         }).catch(error => {  // If nothing matched, something went wrong on your end!
-            console.log(error)
+            Swal.fire({
+              backdrop: `rgba(178,34,34,0.4)`,
+              title: 'Sorry, something went wrong. Please try again later.',
+              width: 600,
+              padding: '3em'
+            }) 
         })
       }
 
@@ -132,38 +148,83 @@ class InputForm extends Component {
         })
           
         }).catch(error => {  // If nothing matched, something went wrong on your end!
-            console.log(error)
+          Swal.fire({
+            backdrop: `rgba(178,34,34,0.4)`,
+            title: 'Sorry, something went wrong. Please try again later.',
+            width: 600,
+            padding: '3em'
+          }) 
         })
       }
 
 
       handleSubmit = (event) => {
     
-      event.preventDefault();
+      // event.preventDefault();
       
       axios.get(`https://us1.locationiq.com/v1/search.php?key=2eecb79c137d15&q=${event.target.value}&format=json`).then(response => {
           this.setState({
               locations: response.data
           })
       }).catch(error => {  // If nothing matched, something went wrong on your end!
-          console.log(error)
+        Swal.fire({
+          backdrop: `rgba(178,34,34,0.4)`,
+          title: 'Sorry, something went wrong. Please try again later.',
+          width: 600,
+          padding: '3em'
+        }) 
       })
     }
 
-
-    
-    handleClick = (event) => {
-      event.preventDefault();
-      this.callForLatAndLon(event.target.innerHTML)
-        
+    myDate = () => {
+      const day = new Date();
+      const days = new Array(7);
+      days[0] = "Sun";
+      days[1] = "Mon";
+      days[2] = "Tues";
+      days[3] = "Wed";
+      days[4] = "Thurs";
+      days[5] = "Fri";
+      days[6] = "Sat";
+      this.setState({currentDay: days[day.getDay()]}, () => {
+        this.makeWeekdayArray()
+      });
+      
     }
+
+    splitString = (stringToSplit, separator) => {
+      const arrayOfStrings = stringToSplit.split(separator);
+      return arrayOfStrings
+    }
+
+    makeWeekdayArray = () => {
+      const currentDay = this.state.currentDay
+      let days = new Array(7);
+      days[0] = "Sun";
+      days[1] = "Mon";
+      days[2] = "Tues";
+      days[3] = "Wed";
+      days[4] = "Thurs";
+      days[5] = "Fri";
+      days[6] = "Sat";
+      
+      const index = days.indexOf(currentDay)
+      
+
+      if (currentDay === 'Sun') {
+        this.setState({currentWeek: days})
+      } else {
+        let currentWeek = [days.splice(index, 7 - index) + ',' + days.splice(0, index)]
+        this.setState({currentWeek: this.splitString(currentWeek[0], ',')})
+      }
+    } 
 
     
     render() {
         return(
             <div className="search-container">
                 <label htmlFor="search">Please input your location!</label> 
-                <input id="search" value={this.state.userSearch} type="text" id="search" placeholder="e.g. Guelph, ON" onChange={this.handleChange} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp} ></input>
+                <input id="search" value={this.state.userSearch} type="text" placeholder="e.g. Guelph, ON" onChange={this.handleChange} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp} ></input>
                 {this.state.showAutocomplete ? 
                 <ul id="autocomplete" className="autocomplete">
                     {this.state.locations.map((location, n) => {
@@ -172,7 +233,7 @@ class InputForm extends Component {
                         )
                     })} 
                 </ul> : null}
-                {this.state.showWeatherData ? <Chart currentWeather={this.state.currentWeather}/> : null}
+                {this.state.showWeatherData ? <Chart currentWeek={this.state.currentWeek} currentWeather={this.state.currentWeather} showUpdate={this.state.showAutocomplete}/> : null}
             </div>
         )
     }
